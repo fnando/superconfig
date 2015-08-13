@@ -5,6 +5,7 @@ class EnvVarsTest < Minitest::Test
     ENV.delete('APP_NAME')
     ENV.delete('FORCE_SSL')
     ENV.delete('TIMEOUT')
+    ENV.delete('RACK_ENV')
   end
 
   test 'mandatory with set value' do
@@ -107,5 +108,15 @@ class EnvVarsTest < Minitest::Test
     end
 
     assert vars.timeout.nil?
+  end
+
+  test 'create alias' do
+    ENV['RACK_ENV'] = 'development'
+    vars = Env::Vars.new do
+      mandatory :rack_env, string, aliases: %w[env]
+    end
+
+    assert_equal 'development', vars.rack_env
+    assert_equal 'development', vars.env
   end
 end

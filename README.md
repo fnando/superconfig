@@ -27,6 +27,7 @@ Config = Env::Vars.new do
   mandatory :database_url, string
   optional  :timeout, int, 10
   optional  :force_ssl, bool, false
+  optional  :rails_env, 'development', string, aliases: %w[env]
 end
 
 Config.database_url

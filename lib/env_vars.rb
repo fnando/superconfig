@@ -10,7 +10,7 @@ module Env
       instance_eval(&block)
     end
 
-    def set(name, type, default = nil, required: false)
+    def set(name, type, default = nil, required: false, aliases: [])
       name = name.to_s
       env_var = name.upcase
       name = "#{name}?" if type == bool
@@ -29,18 +29,22 @@ module Env
           value
         end
       end
+
+      aliases.each do |alias_name|
+        define_singleton_method(alias_name, method(name))
+      end
     end
 
     def validate!(env_var, required)
       raise MissingEnvironmentVariable, "#{env_var} is not defined" if required && !ENV.key?(env_var)
     end
 
-    def mandatory(name, type)
-      set(name, type, required: true)
+    def mandatory(name, type, aliases: [])
+      set(name, type, required: true, aliases: aliases)
     end
 
-    def optional(name, type, default = nil)
-      set(name, type, default)
+    def optional(name, type, default = nil, aliases: [])
+      set(name, type, default, aliases: aliases)
     end
 
     def int
