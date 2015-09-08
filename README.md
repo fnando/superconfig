@@ -35,6 +35,12 @@ Config.timeout
 Config.force_ssl?
 ```
 
+If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local`, `.env.%{environment}` and `.env` files. You _must_ add `dotenv` to your `Gemfile`.
+
+```ruby
+require 'env_vars/dotenv'
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
