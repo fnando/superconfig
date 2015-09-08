@@ -41,6 +41,20 @@ If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply requi
 require 'env_vars/dotenv'
 ```
 
+### Configuring Rails
+
+If you want to use `env_vars` even on your Rails configuration files like `database.yml` and `secrets.yml`, you must load it from `config/boot.rb`, right after setting up Bundler.
+
+```ruby
+ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+
+require 'bundler/setup' # Set up gems listed in the Gemfile.
+
+# Load configuration.
+require 'env_vars/dotenv'
+require File.expand_path('../config', __FILE__)
+```
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake test` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
