@@ -6,6 +6,7 @@ class EnvVarsTest < Minitest::Test
     ENV.delete('FORCE_SSL')
     ENV.delete('TIMEOUT')
     ENV.delete('RACK_ENV')
+    ENV.delete('TZ')
   end
 
   test 'mandatory with set value' do
@@ -118,5 +119,14 @@ class EnvVarsTest < Minitest::Test
 
     assert_equal 'development', vars.rack_env
     assert_equal 'development', vars.env
+  end
+
+  test 'get all caps variable' do
+    ENV['TZ'] = 'Etc/UTC'
+    vars = Env::Vars.new do
+      mandatory :tz, string
+    end
+
+    assert_equal 'Etc/UTC', vars.tz
   end
 end
