@@ -1,5 +1,5 @@
-require 'env_vars'
-require 'dotenv'
+require "env_vars"
+require "dotenv"
 
-env = ENV['RACK_ENV'] || ENV['RAILS_ENV'] || 'development'
-Dotenv.load '.env.local', ".env.#{env}", '.env'
+env = ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "development"
+Dotenv.load ".env.local", ".env.#{env}", ".env"
