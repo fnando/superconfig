@@ -9,7 +9,7 @@ Access environment variables. Also includes presence validation, type coercion a
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'env_vars'
+gem "env_vars"
 ```
 
 And then execute:
@@ -27,7 +27,7 @@ Config = Env::Vars.new do
   mandatory :database_url, string
   optional  :timeout, int, 10
   optional  :force_ssl, bool, false
-  optional  :rails_env, 'development', string, aliases: %w[env]
+  optional  :rails_env, "development", string, aliases: %w[env]
 end
 
 Config.database_url
@@ -35,10 +35,10 @@ Config.timeout
 Config.force_ssl?
 ```
 
-If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local`, `.env.%{environment}` and `.env` files. You _must_ add `dotenv` to your `Gemfile`.
+If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local.%{environment}`, `.env.local`, `.env.%{environment}` and `.env` files, respectively. You _must_ add `dotenv` to your `Gemfile`.
 
 ```ruby
-require 'env_vars/dotenv'
+require "env_vars/dotenv"
 ```
 
 ### Configuring Rails
@@ -46,13 +46,14 @@ require 'env_vars/dotenv'
 If you want to use `env_vars` even on your Rails configuration files like `database.yml` and `secrets.yml`, you must load it from `config/boot.rb`, right after setting up Bundler.
 
 ```ruby
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile", __FILE__)
 
-require 'bundler/setup' # Set up gems listed in the Gemfile.
+# Set up gems listed in the Gemfile.
+require "bundler/setup"
 
 # Load configuration.
-require 'env_vars/dotenv'
-require File.expand_path('../config', __FILE__)
+require "env_vars/dotenv"
+require File.expand_path("../config", __FILE__)
 ```
 
 ## Development
@@ -69,4 +70,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/fnando
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
