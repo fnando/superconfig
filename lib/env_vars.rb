@@ -47,6 +47,11 @@ module Env
       set(name, type, default, aliases: aliases)
     end
 
+    def property(name, func)
+      value = func.call
+      define_singleton_method(name) { value }
+    end
+
     def int
       :int
     end

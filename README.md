@@ -35,6 +35,19 @@ Config.timeout
 Config.force_ssl?
 ```
 
+If you're going to use `env_vars` as your main configuration object, you can also set arbitrary properties, like the following:
+
+```ruby
+Config = Env::Vars.new do
+  optional :redis_url, string, "redis://127.0.0.1"
+  property :redis, -> { Redis.new }
+end
+
+Config.redis.set("key", "value")
+Config.redis.get("key")
+#=> "value"
+```
+
 If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local.%{environment}`, `.env.local`, `.env.%{environment}` and `.env` files, respectively. You _must_ add `dotenv` to your `Gemfile`.
 
 ```ruby

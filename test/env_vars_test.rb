@@ -129,4 +129,12 @@ class EnvVarsTest < Minitest::Test
 
     assert_equal "Etc/UTC", vars.tz
   end
+
+  test "set arbitrary property" do
+    vars = Env::Vars.new do
+      property :number, -> { 1234 }
+    end
+
+    assert_equal 1234, vars.number
+  end
 end
