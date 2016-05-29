@@ -54,6 +54,17 @@ If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply requi
 require "env_vars/dotenv"
 ```
 
+### Types
+
+You can coerce values to the following types:
+
+- `string`: Is the default. E.g. `optional :name, string`.
+- `int`: E.g. `optional :timeout, int`.
+- `float`: E.g. `optional :wait, float`.
+- `bool`: E.g. `optional :force_ssl, bool`. Any of `yes`, `true` or `1` is considered as `true`. Any other value will be coerced to `false`.
+- `symbol`: E.g. `optional :app_name, symbol`.
+- `array`: E.g. `optional :chars, array` or `optional :numbers, array(int)`. The environment variable must be something like `a,b,c`.
+
 ### Configuring Rails
 
 If you want to use `env_vars` even on your Rails configuration files like `database.yml` and `secrets.yml`, you must load it from `config/boot.rb`, right after setting up Bundler.
