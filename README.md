@@ -1,6 +1,10 @@
 # Env::Vars
 
-[![build status](https://travis-ci.org/fnando/env_vars.svg)](https://travis-ci.org/fnando/env_vars)
+[![Travis-CI](https://travis-ci.org/fnando/env_vars.png)](https://travis-ci.org/fnando/env_vars)
+[![Code Climate](https://codeclimate.com/github/fnando/env_vars/badges/gpa.svg)](https://codeclimate.com/github/fnando/env_vars)
+[![Test Coverage](https://codeclimate.com/github/fnando/env_vars/badges/coverage.svg)](https://codeclimate.com/github/fnando/env_vars/coverage)
+[![Gem](https://img.shields.io/gem/v/env_vars.svg)](https://rubygems.org/gems/env_vars)
+[![Gem](https://img.shields.io/gem/dt/env_vars.svg)](https://rubygems.org/gems/env_vars)
 
 Access environment variables. Also includes presence validation, type coercion and default values.
 
