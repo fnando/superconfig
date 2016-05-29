@@ -57,6 +57,22 @@ class EnvVarsTest < Minitest::Test
     assert_nil vars.app_name
   end
 
+  test "coerce float" do
+    vars = Env::Vars.new("WAIT" => "0.01") do
+      mandatory :wait, float
+    end
+
+    assert_in_delta 0.01, vars.wait
+  end
+
+  test "do not coerce nil values to float" do
+    vars = Env::Vars.new({}) do
+      optional :wait, float
+    end
+
+    assert_nil vars.wait
+  end
+
   test "return default boolean" do
     vars = Env::Vars.new({}) do
       optional :force_ssl, bool, true

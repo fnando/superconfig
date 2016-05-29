@@ -66,6 +66,10 @@ module Env
       :symbol
     end
 
+    def float
+      :float
+    end
+
     private
 
     def coerce_to_string(value)
@@ -78,6 +82,10 @@ module Env
 
     def coerce_to_int(value)
       Integer(value) if !BOOL_FALSE.include?(value) && value
+    end
+
+    def coerce_to_float(value)
+      Float(value) if value
     end
 
     def coerce_to_symbol(value)
