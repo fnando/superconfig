@@ -19,16 +19,12 @@ module Env
       validate!(env_var, required)
 
       define_singleton_method(name) do
-        value = @env[env_var] || default
+        return default unless @env.key?(env_var)
 
-        case type
-        when bool
-          BOOL_TRUE.include?(value)
-        when int
-          Integer(value) if !BOOL_FALSE.include?(value) && value
-        else
-          value
-        end
+        value = @env[env_var]
+        coercion_method = "coerce_to_#{type}"
+
+        send(coercion_method, value)
       end
 
       aliases.each do |alias_name|
@@ -64,6 +60,28 @@ module Env
 
     def bool
       :bool
+    end
+
+    def symbol
+      :symbol
+    end
+
+    private
+
+    def coerce_to_string(value)
+      value
+    end
+
+    def coerce_to_bool(value)
+      BOOL_TRUE.include?(value)
+    end
+
+    def coerce_to_int(value)
+      Integer(value) if !BOOL_FALSE.include?(value) && value
+    end
+
+    def coerce_to_symbol(value)
+      value && value.to_sym
     end
   end
 end

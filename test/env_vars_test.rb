@@ -41,6 +41,22 @@ class EnvVarsTest < Minitest::Test
     assert_equal "myapp", vars.app_name
   end
 
+  test "coerce symbol" do
+    vars = Env::Vars.new("APP_NAME" => "myapp") do
+      mandatory :app_name, symbol
+    end
+
+    assert_equal :myapp, vars.app_name
+  end
+
+  test "do not coerce nil values to symbol" do
+    vars = Env::Vars.new({}) do
+      optional :app_name, symbol
+    end
+
+    assert_nil vars.app_name
+  end
+
   test "return default boolean" do
     vars = Env::Vars.new({}) do
       optional :force_ssl, bool, true
