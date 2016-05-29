@@ -1,19 +1,9 @@
 require "test_helper"
 
 class EnvVarsTest < Minitest::Test
-  setup do
-    ENV.delete("APP_NAME")
-    ENV.delete("FORCE_SSL")
-    ENV.delete("TIMEOUT")
-    ENV.delete("RACK_ENV")
-    ENV.delete("TZ")
-  end
-
   test "mandatory with set value" do
-    ENV["APP_NAME"] = "myapp"
-
-    vars = Env::Vars.new do
-      mandatory :app_name, "myapp"
+    vars = Env::Vars.new("APP_NAME" => "myapp") do
+      mandatory :app_name, string
     end
 
     assert_equal "myapp", vars.app_name
@@ -21,16 +11,14 @@ class EnvVarsTest < Minitest::Test
 
   test "mandatory without value raises exception" do
     assert_raises(Env::Vars::MissingEnvironmentVariable) do
-      Env::Vars.new do
-        mandatory :app_name, "myapp"
+      Env::Vars.new({}) do
+        mandatory :app_name, string
       end
     end
   end
 
   test "optional with set value" do
-    ENV["APP_NAME"] = "myapp"
-
-    vars = Env::Vars.new do
+    vars = Env::Vars.new("APP_NAME" => "myapp") do
       optional :app_name, string
     end
 
@@ -38,15 +26,15 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "defines optional" do
-    vars = Env::Vars.new do
+    vars = Env::Vars.new({}) do
       optional :app_name, string
     end
 
-    assert vars.app_name.nil?
+    assert_nil vars.app_name
   end
 
   test "defines optional with default value" do
-    vars = Env::Vars.new do
+    vars = Env::Vars.new({}) do
       optional :app_name, string, "myapp"
     end
 
@@ -54,26 +42,24 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "return default boolean" do
-    vars = Env::Vars.new do
+    vars = Env::Vars.new({}) do
       optional :force_ssl, bool, true
     end
 
     assert vars.force_ssl?
   end
 
-  test 'coerces bool value' do
-    ["yes", "true", "1"].each do |value|
-      ENV["FORCE_SSL"] = value
-      vars = Env::Vars.new do
+  test "coerces bool value" do
+    %w[yes true 1].each do |value|
+      vars = Env::Vars.new("FORCE_SSL" => value) do
         mandatory :force_ssl, bool
       end
 
       assert vars.force_ssl?
     end
 
-    ["no", "false", "0"].each do |value|
-      ENV["FORCE_SSL"] = value
-      vars = Env::Vars.new do
+    %w[no false 0].each do |value|
+      vars = Env::Vars.new("FORCE_SSL" => value) do
         mandatory :force_ssl, bool
       end
 
@@ -82,8 +68,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerces int value" do
-    ENV["TIMEOUT"] = "10"
-    vars = Env::Vars.new do
+    vars = Env::Vars.new("TIMEOUT" => "10") do
       mandatory :timeout, int
     end
 
@@ -92,8 +77,7 @@ class EnvVarsTest < Minitest::Test
 
   test "raises exception with invalid int" do
     assert_raises(ArgumentError) do
-      ENV["TIMEOUT"] = "invalid"
-      vars = Env::Vars.new do
+      vars = Env::Vars.new("TIMEOUT" => "invalid") do
         mandatory :timeout, int
       end
 
@@ -102,18 +86,15 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "do not coerce int when negative bool is set" do
-    ENV["TIMEOUT"] = "false"
-
-    vars = Env::Vars.new do
+    vars = Env::Vars.new("TIMEOUT" => "false") do
       mandatory :timeout, int
     end
 
-    assert vars.timeout.nil?
+    assert_nil vars.timeout
   end
 
   test "create alias" do
-    ENV["RACK_ENV"] = "development"
-    vars = Env::Vars.new do
+    vars = Env::Vars.new("RACK_ENV" => "development") do
       mandatory :rack_env, string, aliases: %w[env]
     end
 
@@ -122,8 +103,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "get all caps variable" do
-    ENV["TZ"] = "Etc/UTC"
-    vars = Env::Vars.new do
+    vars = Env::Vars.new("TZ" => "Etc/UTC") do
       mandatory :tz, string
     end
 

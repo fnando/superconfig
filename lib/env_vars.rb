@@ -6,7 +6,8 @@ module Env
 
     MissingEnvironmentVariable = Class.new(StandardError)
 
-    def initialize(&block)
+    def initialize(env = ENV, &block)
+      @env = env
       instance_eval(&block)
     end
 
@@ -18,7 +19,7 @@ module Env
       validate!(env_var, required)
 
       define_singleton_method(name) do
-        value = ENV[env_var] || default
+        value = @env[env_var] || default
 
         case type
         when bool
@@ -36,7 +37,8 @@ module Env
     end
 
     def validate!(env_var, required)
-      raise MissingEnvironmentVariable, "#{env_var} is not defined" if required && !ENV.key?(env_var)
+      return unless required
+      raise MissingEnvironmentVariable, "#{env_var} is not defined" unless @env.key?(env_var)
     end
 
     def mandatory(name, type, aliases: [])
