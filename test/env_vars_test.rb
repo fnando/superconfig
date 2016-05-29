@@ -73,6 +73,38 @@ class EnvVarsTest < Minitest::Test
     assert_nil vars.wait
   end
 
+  test "coerce array" do
+    vars = Env::Vars.new("CHARS" => "a, b, c") do
+      mandatory :chars, array
+    end
+
+    assert_equal %w[a b c], vars.chars
+  end
+
+  test "coerce array (without spaces)" do
+    vars = Env::Vars.new("CHARS" => "a,b,c") do
+      mandatory :chars, array
+    end
+
+    assert_equal %w[a b c], vars.chars
+  end
+
+  test "coerce array and items" do
+    vars = Env::Vars.new("CHARS" => "a,b,c") do
+      mandatory :chars, array(symbol)
+    end
+
+    assert_equal %i[a b c], vars.chars
+  end
+
+  test "do not coerce nil values to array" do
+    vars = Env::Vars.new({}) do
+      optional :chars, array
+    end
+
+    assert_nil vars.chars
+  end
+
   test "return default boolean" do
     vars = Env::Vars.new({}) do
       optional :force_ssl, bool, true

@@ -20,11 +20,7 @@ module Env
 
       define_singleton_method(name) do
         return default unless @env.key?(env_var)
-
-        value = @env[env_var]
-        coercion_method = "coerce_to_#{type}"
-
-        send(coercion_method, value)
+        coerce(type, @env[env_var])
       end
 
       aliases.each do |alias_name|
@@ -70,6 +66,10 @@ module Env
       :float
     end
 
+    def array(type = string)
+      [:array, type]
+    end
+
     private
 
     def coerce_to_string(value)
@@ -90,6 +90,18 @@ module Env
 
     def coerce_to_symbol(value)
       value && value.to_sym
+    end
+
+    def coerce_to_array(value, type)
+      value && value.split(/, */).map {|v| coerce(type, v) }
+    end
+
+    def coerce(type, value)
+      main_type, sub_type = type
+      args = [value]
+      args << sub_type if sub_type
+
+      send("coerce_to_#{main_type}", *args)
     end
   end
 end
