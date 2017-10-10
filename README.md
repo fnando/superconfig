@@ -44,7 +44,8 @@ If you're going to use `env_vars` as your main configuration object, you can als
 ```ruby
 Config = Env::Vars.new do
   optional :redis_url, string, "redis://127.0.0.1"
-  property :redis, -> { Redis.new }
+  property :redis, -> { Redis.new } # pass an object that responds to #call
+  property(:now) { Time.now }       # or pass a block.
 end
 
 Config.redis.set("key", "value")
@@ -52,10 +53,12 @@ Config.redis.get("key")
 #=> "value"
 ```
 
-If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local.%{environment}`, `.env.local`, `.env.%{environment}` and `.env` files, respectively. You _must_ add `dotenv` to your `Gemfile`.
+Values are cached by default. If you want to dynamically generate new values, set `cache: false`.
 
 ```ruby
-require "env_vars/dotenv"
+Config = Env::Vars.new do
+  property(:uuid, cache: false) { SecureRandom.uuid }
+end
 ```
 
 ### Types
@@ -68,6 +71,14 @@ You can coerce values to the following types:
 - `bool`: E.g. `optional :force_ssl, bool`. Any of `yes`, `true` or `1` is considered as `true`. Any other value will be coerced to `false`.
 - `symbol`: E.g. `optional :app_name, symbol`.
 - `array`: E.g. `optional :chars, array` or `optional :numbers, array(int)`. The environment variable must be something like `a,b,c`.
+
+### Dotenv integration
+
+If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply require `env_vars/dotenv`. This will load environment variables from `.env.local.%{environment}`, `.env.local`, `.env.%{environment}` and `.env` files, respectively. You _must_ add `dotenv` to your `Gemfile`.
+
+```ruby
+require "env_vars/dotenv"
+```
 
 ### Configuring Rails
 

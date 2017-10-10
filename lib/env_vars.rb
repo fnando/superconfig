@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Env
   class Vars
     VERSION = "0.4.0"
@@ -5,6 +7,7 @@ module Env
     BOOL_FALSE = ["no", "false"]
 
     MissingEnvironmentVariable = Class.new(StandardError)
+    MissingCallable = Class.new(StandardError)
 
     def initialize(env = ENV, &block)
       @env = env
@@ -41,9 +44,16 @@ module Env
       set(name, type, default, aliases: aliases)
     end
 
-    def property(name, func)
-      value = func.call
-      define_singleton_method(name) { value }
+    def property(name, func = nil, cache: true, &block)
+      callable = (func || block)
+      raise MissingCallable, "arg[1] must respond to #call or pass a block" unless callable
+
+      if cache
+        value = callable.call
+        define_singleton_method(name) { value }
+      else
+        define_singleton_method(name) { callable.call }
+      end
     end
 
     def int

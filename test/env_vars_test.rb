@@ -181,4 +181,42 @@ class EnvVarsTest < Minitest::Test
 
     assert_equal 1234, vars.number
   end
+
+  test "set arbitrary property with a block" do
+    vars = Env::Vars.new do
+      property :number do
+        1234
+      end
+    end
+
+    assert_equal 1234, vars.number
+  end
+
+  test "cache generated values" do
+    numbers = [1, 2]
+
+    vars = Env::Vars.new do
+      property(:number) { numbers.shift }
+    end
+
+    assert_equal 1, vars.number
+    assert_equal 1, vars.number
+  end
+
+  test "don't cache generated values" do
+    numbers = [1, 2]
+
+    vars = Env::Vars.new do
+      property(:number, cache: false) { numbers.shift }
+    end
+
+    assert_equal 1, vars.number
+    assert_equal 2, vars.number
+  end
+
+  test "raise when no callable has been passed to property" do
+    assert_raises(Exception) do
+      Env::Vars.new { property(:something) }
+    end
+  end
 end
