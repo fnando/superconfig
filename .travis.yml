@@ -4,8 +4,16 @@ sudo: false
 notifications:
   email: false
 rvm:
-- 2.3.1
+- 2.4.2
+- 2.3.5
+- 2.2.8
 before_install: gem install bundler
+before_script:
+- "curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter"
+- "chmod +x ./cc-test-reporter"
+- "./cc-test-reporter before-build"
+after_script:
+- "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
 env:
   global:
-    secure: YgwpSV66h+QXujg6oAihWW2U1MXuXQeBxjqpx3hhiINGiLQRQ8K/A7Ng2cycS792BI3xoaEIalUUApSNcW/rgEM118IjU9PcHQMaKz5QoU5GPoUtyyHsCWRygP+7C/pn4zMQY62e9Ezly7gLx6FHqHbBy7HO3UfjBpVsA67bSgNAZAizRY2aqJ2XA1BJL6gs8/8ie/VPbJ8ti7ryK6vX6ygJmXejlDOBJPZSx1IlQuSYwbdumzG+MwTUtXd2SlwCJpSFipyk8ghAYdh5hEWPKW1LXVIMG2VxQEDqw6LOlittXm8OUPPkDiOi9ByyJHOLLAhMw2E3pMOWHK3xp3szE1hqQCjGP6oQ9kGXjcBqWzsMWpBM0jqVNohaVb8U9GdiqA9W4gJurFciz6ujL5PG4tcmnGsRN8q5jXzLmW2DI/Jx9KcxuQeHzpPv+bJT5NvStl0ShzOFMaCLqHe8yZc2HsePQxjAsGgH6aqzBHphM8nCV41qEKV+IK7ZIomu8WUcMjprI/tg42UFLVckMHM8z4Hze/PAPQGpjwzqeA6VFeABRWt4JDmF2qaMTKJai1clCvOiBsEaJ2h4zOFUiMMGlKDt+oCwcmkSPFXh26WMTM4SsD8SUJj8wgt3ijdyUXSHZScjbyZJmwQ9f0tMUMJ1k07uvMZymeqsHNZa+uN3ARE=
+    secure: hRsybxCL3vUEhYtEdUIJ6pPyFaeVH/Tc1crVXJ0JCmem/rSv/PHS0jUzb8R4EiQKdwFFDgEciASW71XwpesIoY+KbUPfjvG9M8NnKscSuTpX/9CAVvoEoLzUtHYV5VNx6St2YTb1nStXhvGqBN0y5VNil9t5q9NIEM65eSgZuO7lvzAGgvUHYOkmljHqHb2rXejdAJ5k3NVbKPU3fByGGxvO9SiJ4RLWWpNhCwCWjVlds5+wffiHO2ojWdfLYikaIIcuqZzcyYuKUch16guPfz8+AsYpqHTsf+s81UnNKLk3Ut9zl5JoxCkkTSt1ZzAHNEceR4KXgRYxFZh3uHg8fXrYqdc4A4tgHqsndXeZnEFFnmAlOvjbGldtYoSjzJGBaSxKei9mZbeFy6ytlwZeMp22hBwflFUlbxF/O8IpvSRAq1M4QG1nfEfKCXhyFCmOaeS1BcgcFLzXiDYibCnAfLmK/EMa5V+zo4USjiRmzSBmQFdNk91x+zOGRQOz6lt3s6OEm98FHh/J9Y4tQ9DkkhwS6x9MuSfdjEQkyhvB2xsl9SOfdlU5Ork+FBkRFGlYtiAcHwVa6e0ikJCAGFW2xVqKwq9dT/Wvg4VNtkCmJORdsuxZf/Jtgh2k5gjFi7ZO4mViIxMjIAQqUA/+XR9dFxuAfSZC6FJG4l4ixqvmNoM=
