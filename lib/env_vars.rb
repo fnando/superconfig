@@ -2,7 +2,7 @@
 
 module Env
   class Vars
-    VERSION = "0.4.0"
+    VERSION = "0.5.0"
     BOOL_TRUE = ["yes", "true", "1", true]
     BOOL_FALSE = ["no", "false"]
 
