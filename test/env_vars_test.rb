@@ -65,6 +65,15 @@ class EnvVarsTest < Minitest::Test
     assert_in_delta 0.01, vars.wait
   end
 
+  test "coerce bigdecimal" do
+    vars = Env::Vars.new("FEE" => "0.0001") do
+      mandatory :fee, bigdecimal
+    end
+
+    assert_equal BigDecimal("0.0001"), vars.fee
+    assert_kind_of BigDecimal, vars.fee
+  end
+
   test "do not coerce nil values to float" do
     vars = Env::Vars.new({}) do
       optional :wait, float

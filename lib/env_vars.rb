@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "bigdecimal"
+
 module Env
   class Vars
     VERSION = "0.5.0"
@@ -76,6 +78,10 @@ module Env
       :float
     end
 
+    def bigdecimal
+      :bigdecimal
+    end
+
     def array(type = string)
       [:array, type]
     end
@@ -96,6 +102,10 @@ module Env
 
     def coerce_to_float(value)
       Float(value) if value
+    end
+
+    def coerce_to_bigdecimal(value)
+      BigDecimal(value) if value
     end
 
     def coerce_to_symbol(value)

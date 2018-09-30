@@ -68,6 +68,7 @@ You can coerce values to the following types:
 - `string`: Is the default. E.g. `optional :name, string`.
 - `int`: E.g. `optional :timeout, int`.
 - `float`: E.g. `optional :wait, float`.
+- `bigdecimal`: E.g. `optional :fee, bigdecimal`.
 - `bool`: E.g. `optional :force_ssl, bool`. Any of `yes`, `true` or `1` is considered as `true`. Any other value will be coerced to `false`.
 - `symbol`: E.g. `optional :app_name, symbol`.
 - `array`: E.g. `optional :chars, array` or `optional :numbers, array(int)`. The environment variable must be something like `a,b,c`.
