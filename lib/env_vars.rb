@@ -13,6 +13,7 @@ module Env
 
     def initialize(env = ENV, &block)
       @env = env
+      @__cache__ = {}
       instance_eval(&block)
     end
 
@@ -51,8 +52,9 @@ module Env
       raise MissingCallable, "arg[1] must respond to #call or pass a block" unless callable
 
       if cache
-        value = callable.call
-        define_singleton_method(name) { value }
+        define_singleton_method(name) do
+          @__cache__[name.to_sym] ||= callable.call
+        end
       else
         define_singleton_method(name) { callable.call }
       end

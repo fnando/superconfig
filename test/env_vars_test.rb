@@ -228,4 +228,16 @@ class EnvVarsTest < Minitest::Test
       Env::Vars.new { property(:something) }
     end
   end
+
+  test "lazy evaluate properties" do
+    numbers = [1, 2]
+
+    vars = Env::Vars.new do
+      property(:number) { numbers.shift }
+    end
+
+    assert_equal [1, 2], numbers
+    vars.number
+    assert_equal [2], numbers
+  end
 end
