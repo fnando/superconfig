@@ -1,12 +1,12 @@
-# Env::Vars
+![env_vars: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/env_vars/master/env_vars.png)
 
-[![Travis-CI](https://travis-ci.org/fnando/env_vars.png)](https://travis-ci.org/fnando/env_vars)
-[![Code Climate](https://codeclimate.com/github/fnando/env_vars/badges/gpa.svg)](https://codeclimate.com/github/fnando/env_vars)
-[![Test Coverage](https://codeclimate.com/github/fnando/env_vars/badges/coverage.svg)](https://codeclimate.com/github/fnando/env_vars/coverage)
-[![Gem](https://img.shields.io/gem/v/env_vars.svg)](https://rubygems.org/gems/env_vars)
-[![Gem](https://img.shields.io/gem/dt/env_vars.svg)](https://rubygems.org/gems/env_vars)
-
-Access environment variables. Also includes presence validation, type coercion and default values.
+<p align="center">
+  <a href="https://travis-ci.org/fnando/env_vars"><img src="https://travis-ci.org/fnando/env_vars.svg" alt="Travis-CI"></a>
+  <a href="https://codeclimate.com/github/fnando/env_vars"><img src="https://codeclimate.com/github/fnando/env_vars/badges/gpa.svg" alt="Code Climate"></a>
+  <a href="https://codeclimate.com/github/fnando/env_vars/coverage"><img src="https://codeclimate.com/github/fnando/env_vars/badges/coverage.svg" alt="Test Coverage"></a>
+  <a href="https://rubygems.org/gems/env_vars"><img src="https://img.shields.io/gem/v/env_vars.svg" alt="Gem"></a>
+  <a href="https://rubygems.org/gems/env_vars"><img src="https://img.shields.io/gem/dt/env_vars.svg" alt="Gem"></a>
+</p>
 
 ## Installation
 
@@ -106,7 +106,10 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/fnando/env_vars. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
+
+## Icon
+
+Icon made by [eucalyp](https://www.flaticon.com/authors/eucalyp) from [Flaticon](https://www.flaticon.com/) is licensed by Creative Commons BY 3.0.
