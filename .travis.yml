@@ -4,16 +4,16 @@ sudo: false
 notifications:
   email: false
 rvm:
+- 2.5.2
 - 2.4.2
-- 2.3.5
-- 2.2.8
+- 2.3.8
 before_install: gem install bundler
 before_script:
-- "curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter"
-- "chmod +x ./cc-test-reporter"
+- curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+- chmod +x ./cc-test-reporter
 - "./cc-test-reporter before-build"
 after_script:
-- "./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT"
+- "./cc-test-reporter after-build --coverage-input-type simplecov --exit-code $TRAVIS_TEST_RESULT"
 env:
   global:
-    secure: hRsybxCL3vUEhYtEdUIJ6pPyFaeVH/Tc1crVXJ0JCmem/rSv/PHS0jUzb8R4EiQKdwFFDgEciASW71XwpesIoY+KbUPfjvG9M8NnKscSuTpX/9CAVvoEoLzUtHYV5VNx6St2YTb1nStXhvGqBN0y5VNil9t5q9NIEM65eSgZuO7lvzAGgvUHYOkmljHqHb2rXejdAJ5k3NVbKPU3fByGGxvO9SiJ4RLWWpNhCwCWjVlds5+wffiHO2ojWdfLYikaIIcuqZzcyYuKUch16guPfz8+AsYpqHTsf+s81UnNKLk3Ut9zl5JoxCkkTSt1ZzAHNEceR4KXgRYxFZh3uHg8fXrYqdc4A4tgHqsndXeZnEFFnmAlOvjbGldtYoSjzJGBaSxKei9mZbeFy6ytlwZeMp22hBwflFUlbxF/O8IpvSRAq1M4QG1nfEfKCXhyFCmOaeS1BcgcFLzXiDYibCnAfLmK/EMa5V+zo4USjiRmzSBmQFdNk91x+zOGRQOz6lt3s6OEm98FHh/J9Y4tQ9DkkhwS6x9MuSfdjEQkyhvB2xsl9SOfdlU5Ork+FBkRFGlYtiAcHwVa6e0ikJCAGFW2xVqKwq9dT/Wvg4VNtkCmJORdsuxZf/Jtgh2k5gjFi7ZO4mViIxMjIAQqUA/+XR9dFxuAfSZC6FJG4l4ixqvmNoM=
+    secure: cdMMHvDQelzd4Z/7EMaC02s3Ef8TnEO3L6d4C/zfkJt7GjTJqptnqja+F2EcTmdSFs8zM0QHWgB3umfzBtiR2swXJ81c19owqdoxpmo2sOTJNQeRpfkRqngw7VW0RpoUQBWmrbPjK1xV6EJAM38U0TqhO5WR5uhKKNDJgnmWrIITaSkuo0r/b6Hia5iIIRCDqgXzuEYbx3wYKwn/7aYjpoXq3mPpS8L4AuzG2qjTTyLNBqhFPrhENuu4Hu9Bjj6ziyPUCM2cvrxP43smy7UvCmnr21hT9mDQnsaw6WvW4qReHgLtbckoK1Fky5YuU74R8JnYBqIi9sTjs19z10xdhxwJmCI1p4RaKsEoYWTV2geHK3rD0gXgtZqc8hWMfMmpz0U+TmVTuMmLatdaYglCUuSfgL7KPyCji9k1yMP4jEmjxYTukY9nwhAEvbSMBCiHadW1nEhffgYH2alZr1CxxRi/UKUTE10kxHni8OILuWP7VgFOs0qeS0HEmo+PYXQSOXMEBb76YtahmD+c4iPYJMA3wD6TR71MEvu+MIn3PLQcte2OWhoBsd+9knbus693Bb7MESCk857+vm3fwdbApC945ABGUTSfv2IR74nlNRY2I4fAcJCXhhsKyNh95QPa/sDoKnL2XgNlYsWYxBTa8h7ZxI0YVnlc13U4A1SaRLo=
