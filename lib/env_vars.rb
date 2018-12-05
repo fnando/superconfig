@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require "bigdecimal"
-
 module Env
   class Vars
     VERSION = "0.7.0"
@@ -86,6 +84,7 @@ module Env
     end
 
     def bigdecimal
+      require "bigdecimal"
       :bigdecimal
     end
 
