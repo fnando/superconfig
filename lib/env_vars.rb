@@ -4,7 +4,7 @@ require "bigdecimal"
 
 module Env
   class Vars
-    VERSION = "0.6.0"
+    VERSION = "0.7.0"
     BOOL_TRUE = ["yes", "true", "1", true]
     BOOL_FALSE = ["no", "false"]
 
