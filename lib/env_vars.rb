@@ -17,6 +17,11 @@ module Env
       instance_eval(&block)
     end
 
+    def to_s
+      "#<Env::Vars>"
+    end
+    alias_method :inspect, :to_s
+
     def set(name, type, default = nil, required: false, aliases: [])
       name = name.to_s
       env_var = name.upcase

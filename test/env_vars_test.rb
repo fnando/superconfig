@@ -1,6 +1,13 @@
 require "test_helper"
 
 class EnvVarsTest < Minitest::Test
+  test "avoid leaking information" do
+    vars = Env::Vars.new { @foo = 1 }
+
+    assert_equal "#<Env::Vars>", vars.to_s
+    assert_equal "#<Env::Vars>", vars.inspect
+  end
+
   test "mandatory with set value" do
     vars = Env::Vars.new("APP_NAME" => "myapp") do
       mandatory :app_name, string
