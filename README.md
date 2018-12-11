@@ -39,6 +39,16 @@ Config.timeout
 Config.force_ssl?
 ```
 
+You can specify the description for both `mandatory` and `optional` methods; this will be used in exceptions.
+
+```ruby
+Config = Env::Vars.new do
+  mandatory :missing_var, string, description: "this is important"
+end
+
+#=> Env::Vars::MissingEnvironmentVariable: MISSING_VAR (this is important) is not defined
+```
+
 If you're going to use `env_vars` as your main configuration object, you can also set arbitrary properties, like the following:
 
 ```ruby

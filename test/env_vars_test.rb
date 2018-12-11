@@ -24,6 +24,14 @@ class EnvVarsTest < Minitest::Test
     end
   end
 
+  test "mandatory without value raises exception (description)" do
+    assert_raises(Env::Vars::MissingEnvironmentVariable, "APP_NAME (the app name) if not defined") do
+      Env::Vars.new({}) do
+        mandatory :app_name, string, description: "the app name"
+      end
+    end
+  end
+
   test "optional with set value" do
     vars = Env::Vars.new("APP_NAME" => "myapp") do
       optional :app_name, string

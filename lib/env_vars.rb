@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 module Env
   class Vars
     VERSION = "0.7.1"
@@ -20,12 +18,12 @@ module Env
     end
     alias_method :inspect, :to_s
 
-    def set(name, type, default = nil, required: false, aliases: [])
+    def set(name, type, default = nil, required: false, aliases: [], description: nil)
       name = name.to_s
       env_var = name.upcase
       name = "#{name}?" if type == bool
 
-      validate!(env_var, required)
+      validate!(env_var, required, description)
 
       define_singleton_method(name) do
         return default unless @env.key?(env_var)
@@ -37,20 +35,26 @@ module Env
       end
     end
 
-    def validate!(env_var, required)
+    def validate!(env_var, required, description)
       return unless required
-      raise MissingEnvironmentVariable, "#{env_var} is not defined" unless @env.key?(env_var)
+      return if @env.key?(env_var)
+
+      message = env_var.to_s
+      message << " (#{description})" if description
+      message << " is not defined"
+
+      raise MissingEnvironmentVariable, message
     end
 
-    def mandatory(name, type, aliases: [])
-      set(name, type, required: true, aliases: aliases)
+    def mandatory(name, type, aliases: [], description: nil)
+      set(name, type, required: true, aliases: aliases, description: description)
     end
 
-    def optional(name, type, default = nil, aliases: [])
-      set(name, type, default, aliases: aliases)
+    def optional(name, type, default = nil, aliases: [], description: nil)
+      set(name, type, default, aliases: aliases, description: description)
     end
 
-    def property(name, func = nil, cache: true, &block)
+    def property(name, func = nil, cache: true, description: nil, &block)
       callable = (func || block)
       raise MissingCallable, "arg[1] must respond to #call or pass a block" unless callable
 
