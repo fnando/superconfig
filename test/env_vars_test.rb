@@ -9,7 +9,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "mandatory with set value" do
-    vars = Env::Vars.new("APP_NAME" => "myapp") do
+    vars = Env::Vars.new(env: {"APP_NAME" => "myapp"}) do
       mandatory :app_name, string
     end
 
@@ -18,22 +18,56 @@ class EnvVarsTest < Minitest::Test
 
   test "mandatory without value raises exception" do
     assert_raises(Env::Vars::MissingEnvironmentVariable) do
-      Env::Vars.new({}) do
+      Env::Vars.new(env: {}) do
         mandatory :app_name, string
       end
     end
   end
 
   test "mandatory without value raises exception (description)" do
-    assert_raises(Env::Vars::MissingEnvironmentVariable, "APP_NAME (the app name) if not defined") do
-      Env::Vars.new({}) do
+    assert_raises(Env::Vars::MissingEnvironmentVariable, "APP_NAME (the app name) if not defined.") do
+      Env::Vars.new(env: {}) do
         mandatory :app_name, string, description: "the app name"
       end
     end
   end
 
+  test "mandatory without value logs message" do
+    stderr = StringIO.new
+
+    Env::Vars.new(env: {}, raise_exception: false, stderr: stderr) do
+      mandatory :app_name, string
+    end
+
+    assert_equal "[ENV_VARS] APP_NAME is not defined.\n", stderr.tap(&:rewind).read
+  end
+
+  test "mandatory without value logs colored message" do
+    stderr = Class.new(StringIO) do
+      def tty?
+        true
+      end
+    end.new
+
+    Env::Vars.new(env: {}, raise_exception: false, stderr: stderr) do
+      mandatory :app_name, string
+    end
+
+    assert_equal "\e[31m[ENV_VARS] APP_NAME is not defined.\e[0m\n", stderr.tap(&:rewind).read
+  end
+
+  test "mandatory without value logs message (description)" do
+    stderr = StringIO.new
+
+    Env::Vars.new(env: {}, raise_exception: false, stderr: stderr) do
+      mandatory :app_name, string, description: "the app name"
+    end
+
+    assert_equal "[ENV_VARS] APP_NAME (the app name) is not defined.\n", stderr.tap(&:rewind).read
+  end
+
   test "optional with set value" do
-    vars = Env::Vars.new("APP_NAME" => "myapp") do
+    vars = Env::Vars.new(env: {"APP_NAME" => "myapp"}) do
       optional :app_name, string
     end
 
@@ -41,7 +75,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "defines optional" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :app_name, string
     end
 
@@ -49,7 +83,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "defines optional with default value" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :app_name, string, "myapp"
     end
 
@@ -57,7 +91,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce symbol" do
-    vars = Env::Vars.new("APP_NAME" => "myapp") do
+    vars = Env::Vars.new(env: {"APP_NAME" => "myapp"}) do
       mandatory :app_name, symbol
     end
 
@@ -65,7 +99,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "do not coerce nil values to symbol" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :app_name, symbol
     end
 
@@ -73,7 +107,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce float" do
-    vars = Env::Vars.new("WAIT" => "0.01") do
+    vars = Env::Vars.new(env: {"WAIT" => "0.01"}) do
       mandatory :wait, float
     end
 
@@ -81,7 +115,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce bigdecimal" do
-    vars = Env::Vars.new("FEE" => "0.0001") do
+    vars = Env::Vars.new(env: {"FEE" => "0.0001"}) do
       mandatory :fee, bigdecimal
     end
 
@@ -90,7 +124,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "do not coerce nil values to float" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :wait, float
     end
 
@@ -98,7 +132,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce array" do
-    vars = Env::Vars.new("CHARS" => "a, b, c") do
+    vars = Env::Vars.new(env: {"CHARS" => "a, b, c"}) do
       mandatory :chars, array
     end
 
@@ -106,7 +140,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce array (without spaces)" do
-    vars = Env::Vars.new("CHARS" => "a,b,c") do
+    vars = Env::Vars.new(env: {"CHARS" => "a,b,c"}) do
       mandatory :chars, array
     end
 
@@ -114,7 +148,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerce array and items" do
-    vars = Env::Vars.new("CHARS" => "a,b,c") do
+    vars = Env::Vars.new(env: {"CHARS" => "a,b,c"}) do
       mandatory :chars, array(symbol)
     end
 
@@ -122,7 +156,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "do not coerce nil values to array" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :chars, array
     end
 
@@ -130,7 +164,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "return default boolean" do
-    vars = Env::Vars.new({}) do
+    vars = Env::Vars.new(env: {}) do
       optional :force_ssl, bool, true
     end
 
@@ -139,7 +173,7 @@ class EnvVarsTest < Minitest::Test
 
   test "coerces bool value" do
     %w[yes true 1].each do |value|
-      vars = Env::Vars.new("FORCE_SSL" => value) do
+      vars = Env::Vars.new(env: {"FORCE_SSL" => value}) do
         mandatory :force_ssl, bool
       end
 
@@ -147,7 +181,7 @@ class EnvVarsTest < Minitest::Test
     end
 
     %w[no false 0].each do |value|
-      vars = Env::Vars.new("FORCE_SSL" => value) do
+      vars = Env::Vars.new(env: {"FORCE_SSL" => value}) do
         mandatory :force_ssl, bool
       end
 
@@ -156,7 +190,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "coerces int value" do
-    vars = Env::Vars.new("TIMEOUT" => "10") do
+    vars = Env::Vars.new(env: {"TIMEOUT" => "10"}) do
       mandatory :timeout, int
     end
 
@@ -165,7 +199,7 @@ class EnvVarsTest < Minitest::Test
 
   test "raises exception with invalid int" do
     assert_raises(ArgumentError) do
-      vars = Env::Vars.new("TIMEOUT" => "invalid") do
+      vars = Env::Vars.new(env: {"TIMEOUT" => "invalid"}) do
         mandatory :timeout, int
       end
 
@@ -174,7 +208,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "do not coerce int when negative bool is set" do
-    vars = Env::Vars.new("TIMEOUT" => "false") do
+    vars = Env::Vars.new(env: {"TIMEOUT" => "false"}) do
       mandatory :timeout, int
     end
 
@@ -182,7 +216,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "create alias" do
-    vars = Env::Vars.new("RACK_ENV" => "development") do
+    vars = Env::Vars.new(env: {"RACK_ENV" => "development"}) do
       mandatory :rack_env, string, aliases: %w[env]
     end
 
@@ -191,7 +225,7 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "get all caps variable" do
-    vars = Env::Vars.new("TZ" => "Etc/UTC") do
+    vars = Env::Vars.new(env: {"TZ" => "Etc/UTC"}) do
       mandatory :tz, string
     end
 

@@ -71,6 +71,16 @@ Config = Env::Vars.new do
 end
 ```
 
+You may want to start a debug session without raising exceptions for missing variables. In this case, just pass `raise_exception: false` instead to log error messages to `$stderr`. This is especially great with Rails' credentials command (`rails credentials:edit`) when already defined the configuration.
+
+```ruby
+Config = Env::Vars.new(raise_exception: false) do
+  mandatory :database_url, string, description: "the leader database"
+end
+
+#=> [ENV_VARS] DATABASE_URL (the leader database) is not defined
+```
+
 ### Types
 
 You can coerce values to the following types:

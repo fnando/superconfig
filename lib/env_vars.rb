@@ -7,8 +7,10 @@ module Env
     MissingEnvironmentVariable = Class.new(StandardError)
     MissingCallable = Class.new(StandardError)
 
-    def initialize(env = ENV, &block)
+    def initialize(env: ENV, raise_exception: true, stderr: $stderr, &block)
       @env = env
+      @raise_exception = raise_exception
+      @stderr = stderr
       @__cache__ = {}
       instance_eval(&block)
     end
@@ -41,9 +43,13 @@ module Env
 
       message = env_var.to_s
       message << " (#{description})" if description
-      message << " is not defined"
+      message << " is not defined."
 
-      raise MissingEnvironmentVariable, message
+      raise MissingEnvironmentVariable, message if @raise_exception
+
+      message = "[ENV_VARS] #{message}"
+      message = "\e[31m#{message}\e[0m" if @stderr.tty?
+      @stderr << message << "\n"
     end
 
     def mandatory(name, type, aliases: [], description: nil)
