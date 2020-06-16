@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class EnvVarsTest < Minitest::Test
@@ -25,7 +27,9 @@ class EnvVarsTest < Minitest::Test
   end
 
   test "mandatory without value raises exception (description)" do
-    assert_raises(Env::Vars::MissingEnvironmentVariable, "APP_NAME (the app name) if not defined.") do
+    error_message = "APP_NAME (the app name) if not defined."
+
+    assert_raises(Env::Vars::MissingEnvironmentVariable, error_message) do
       Env::Vars.new(env: {}) do
         mandatory :app_name, string, description: "the app name"
       end
@@ -39,7 +43,8 @@ class EnvVarsTest < Minitest::Test
       mandatory :app_name, string
     end
 
-    assert_equal "[ENV_VARS] APP_NAME is not defined.\n", stderr.tap(&:rewind).read
+    assert_equal "[ENV_VARS] APP_NAME is not defined.\n",
+                 stderr.tap(&:rewind).read
   end
 
   test "mandatory without value logs colored message" do
@@ -53,7 +58,8 @@ class EnvVarsTest < Minitest::Test
       mandatory :app_name, string
     end
 
-    assert_equal "\e[31m[ENV_VARS] APP_NAME is not defined.\e[0m\n", stderr.tap(&:rewind).read
+    assert_equal "\e[31m[ENV_VARS] APP_NAME is not defined.\e[0m\n",
+                 stderr.tap(&:rewind).read
   end
 
   test "mandatory without value logs message (description)" do
@@ -63,7 +69,8 @@ class EnvVarsTest < Minitest::Test
       mandatory :app_name, string, description: "the app name"
     end
 
-    assert_equal "[ENV_VARS] APP_NAME (the app name) is not defined.\n", stderr.tap(&:rewind).read
+    assert_equal "[ENV_VARS] APP_NAME (the app name) is not defined.\n",
+                 stderr.tap(&:rewind).read
   end
 
   test "optional with set value" do
@@ -213,6 +220,14 @@ class EnvVarsTest < Minitest::Test
     end
 
     assert_nil vars.timeout
+  end
+
+  test "coerces json value" do
+    vars = Env::Vars.new(env: {"KEYRING" => %[{"1":"SECRET"}]}) do
+      mandatory :keyring, json
+    end
+
+    assert_equal vars.keyring["1"], "SECRET"
   end
 
   test "create alias" do

@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module Env
   class Vars
     VERSION = "1.0.0"
-    BOOL_TRUE = ["yes", "true", "1", true]
-    BOOL_FALSE = ["no", "false"]
+    BOOL_TRUE = ["yes", "true", "1", true].freeze
+    BOOL_FALSE = %w[no false].freeze
 
     MissingEnvironmentVariable = Class.new(StandardError)
     MissingCallable = Class.new(StandardError)
@@ -18,9 +20,16 @@ module Env
     def to_s
       "#<Env::Vars>"
     end
-    alias_method :inspect, :to_s
+    alias inspect to_s
 
-    def set(name, type, default = nil, required: false, aliases: [], description: nil)
+    def set(
+      name,
+      type,
+      default = nil,
+      required: false,
+      aliases: [],
+      description: nil
+    )
       name = name.to_s
       env_var = name.upcase
       name = "#{name}?" if type == bool
@@ -29,6 +38,7 @@ module Env
 
       define_singleton_method(name) do
         return default unless @env.key?(env_var)
+
         coerce(type, @env[env_var])
       end
 
@@ -53,16 +63,25 @@ module Env
     end
 
     def mandatory(name, type, aliases: [], description: nil)
-      set(name, type, required: true, aliases: aliases, description: description)
+      set(
+        name,
+        type,
+        required: true,
+        aliases: aliases,
+        description: description
+      )
     end
 
     def optional(name, type, default = nil, aliases: [], description: nil)
       set(name, type, default, aliases: aliases, description: description)
     end
 
-    def property(name, func = nil, cache: true, description: nil, &block)
+    def property(name, func = nil, cache: true, description: nil, &block) # rubocop:disable Lint/UnusedMethodArgument
       callable = (func || block)
-      raise MissingCallable, "arg[1] must respond to #call or pass a block" unless callable
+
+      unless callable
+        raise MissingCallable, "arg[1] must respond to #call or pass a block"
+      end
 
       if cache
         define_singleton_method(name) do
@@ -102,37 +121,43 @@ module Env
       [:array, type]
     end
 
-    private
+    def json
+      :json
+    end
 
-    def coerce_to_string(value)
+    private def coerce_to_string(value)
       value
     end
 
-    def coerce_to_bool(value)
+    private def coerce_to_bool(value)
       BOOL_TRUE.include?(value)
     end
 
-    def coerce_to_int(value)
+    private def coerce_to_int(value)
       Integer(value) if !BOOL_FALSE.include?(value) && value
     end
 
-    def coerce_to_float(value)
+    private def coerce_to_float(value)
       Float(value) if value
     end
 
-    def coerce_to_bigdecimal(value)
+    private def coerce_to_bigdecimal(value)
       BigDecimal(value) if value
     end
 
-    def coerce_to_symbol(value)
-      value && value.to_sym
+    private def coerce_to_symbol(value)
+      value&.to_sym
     end
 
-    def coerce_to_array(value, type)
-      value && value.split(/, */).map {|v| coerce(type, v) }
+    private def coerce_to_array(value, type)
+      value&.split(/, */)&.map {|v| coerce(type, v) }
     end
 
-    def coerce(type, value)
+    private def coerce_to_json(value)
+      value && JSON.parse(value)
+    end
+
+    private def coerce(type, value)
       main_type, sub_type = type
       args = [value]
       args << sub_type if sub_type
