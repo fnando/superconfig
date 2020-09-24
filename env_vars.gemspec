@@ -7,6 +7,7 @@ Gem::Specification.new do |spec|
   spec.version       = Env::Vars::VERSION
   spec.authors       = ["Nando Vieira"]
   spec.email         = ["fnando.vieira@gmail.com"]
+  spec.required_ruby_version = Gem::Requirement.new(">= 2.3.0")
 
   spec.summary       = "Access environment variables. Also includes presence " \
                        "validation, type coercion and default values."
@@ -25,5 +26,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "minitest-utils"
   spec.add_development_dependency "pry-meta"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rubocop"
+  spec.add_development_dependency "rubocop-fnando"
   spec.add_development_dependency "simplecov"
 end
