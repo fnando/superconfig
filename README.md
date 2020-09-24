@@ -1,4 +1,4 @@
-![env_vars: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/env_vars/master/env_vars.png)
+![env_vars: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/env_vars/main/env_vars.png)
 
 <p align="center">
   <a href="https://travis-ci.org/fnando/env_vars"><img src="https://travis-ci.org/fnando/env_vars.svg" alt="Travis-CI"></a>
