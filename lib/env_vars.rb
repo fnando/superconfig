@@ -2,7 +2,7 @@
 
 module Env
   class Vars
-    VERSION = "1.1.0"
+    VERSION = "2.0.0"
     BOOL_TRUE = ["yes", "true", "1", true].freeze
     BOOL_FALSE = %w[no false].freeze
 
