@@ -304,4 +304,14 @@ class EnvVarsTest < Minitest::Test
     vars.number
     assert_equal [2], numbers
   end
+
+  test "wrap Rails credentials" do
+    vars = Env::Vars.new do
+      credential(:secret)
+      credential(:another_secret, &:upcase)
+    end
+
+    assert_equal "secret", vars.secret
+    assert_equal "ANOTHER_SECRET", vars.another_secret
+  end
 end

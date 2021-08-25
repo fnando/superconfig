@@ -86,6 +86,22 @@ end
 #=> [ENV_VARS] DATABASE_URL (the leader database) is not defined
 ```
 
+I'd like to centralize access to my credentials; there's a handy mechanism for
+doing that with `env_vars`:
+
+```ruby
+Config = Env::Vars.new do
+  credential :api_secret_key
+  credential :slack_oauth_credentials do |creds|
+    SlackCredentials.new(creds)
+  end
+end
+
+Config.api_secret_key
+Config.slack_oauth_credentials
+#=> The value stored under `Rails.application.credentials[:api_secret_key]`
+```
+
 ### Types
 
 You can coerce values to the following types:

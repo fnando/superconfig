@@ -92,6 +92,15 @@ module Env
       end
     end
 
+    def credential(name, &block)
+      define_singleton_method(name) do
+        @__cache__["_credential_#{name}".to_sym] ||= begin
+          value = Rails.application.credentials.fetch(name)
+          block ? block.call(value) : value # rubocop:disable Performance/RedundantBlockCall
+        end
+      end
+    end
+
     def int
       :int
     end
