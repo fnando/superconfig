@@ -8,11 +8,5 @@ AllCops:
   Exclude:
     - vendor/**/*
 
-Metrics/ClassLength:
-  Enabled: false
-
-Metrics/MethodLength:
-  Enabled: false
-
-Metrics/ParameterLists:
+Metrics:
   Enabled: false

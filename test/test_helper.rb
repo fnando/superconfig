@@ -5,7 +5,7 @@ SimpleCov.start
 
 require "bundler/setup"
 require "rails"
-require "env_vars"
+require "superconfig"
 require "minitest/autorun"
 require "minitest/utils"
 
