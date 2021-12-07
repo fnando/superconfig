@@ -1,7 +1,7 @@
 ![SuperConfig: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/superconfig/main/superconfig.png)
 
 <p align="center">
-  <a href="https://github.com/fnando/superconfig/actions/workflows/tests.yml"><img src="https://github.com/fnando/superconfig/workflows/Tests/badge.svg" alt="Github Actions"></a>
+  <a href="https://github.com/fnando/superconfig/actions/workflows/ruby-tests.yml"><img src="https://github.com/fnando/superconfig/workflows/ruby-tests/badge.svg" alt="Github Actions"></a>
   <a href="https://codeclimate.com/github/fnando/superconfig"><img src="https://codeclimate.com/github/fnando/superconfig/badges/gpa.svg" alt="Code Climate"></a>
   <a href="https://rubygems.org/gems/superconfig"><img src="https://img.shields.io/gem/v/superconfig.svg" alt="Gem"></a>
   <a href="https://rubygems.org/gems/superconfig"><img src="https://img.shields.io/gem/dt/superconfig.svg" alt="Gem"></a>
