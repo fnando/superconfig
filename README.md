@@ -1,10 +1,10 @@
-![env_vars: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/env_vars/main/env_vars.png)
+![SuperConfig: Access environment variables. Also includes presence validation, type coercion and default values.](https://raw.githubusercontent.com/fnando/superconfig/main/superconfig.png)
 
 <p align="center">
-  <a href="https://github.com/fnando/env_vars/actions/workflows/tests.yml"><img src="https://github.com/fnando/env_vars/workflows/Tests/badge.svg" alt="Github Actions"></a>
-  <a href="https://codeclimate.com/github/fnando/env_vars"><img src="https://codeclimate.com/github/fnando/env_vars/badges/gpa.svg" alt="Code Climate"></a>
-  <a href="https://rubygems.org/gems/env_vars"><img src="https://img.shields.io/gem/v/env_vars.svg" alt="Gem"></a>
-  <a href="https://rubygems.org/gems/env_vars"><img src="https://img.shields.io/gem/dt/env_vars.svg" alt="Gem"></a>
+  <a href="https://github.com/fnando/superconfig/actions/workflows/tests.yml"><img src="https://github.com/fnando/superconfig/workflows/Tests/badge.svg" alt="Github Actions"></a>
+  <a href="https://codeclimate.com/github/fnando/superconfig"><img src="https://codeclimate.com/github/fnando/superconfig/badges/gpa.svg" alt="Code Climate"></a>
+  <a href="https://rubygems.org/gems/superconfig"><img src="https://img.shields.io/gem/v/superconfig.svg" alt="Gem"></a>
+  <a href="https://rubygems.org/gems/superconfig"><img src="https://img.shields.io/gem/dt/superconfig.svg" alt="Gem"></a>
 </p>
 
 ## Installation
@@ -12,7 +12,7 @@
 Add this line to your application's Gemfile:
 
 ```ruby
-gem "env_vars"
+gem "superconfig"
 ```
 
 And then execute:
@@ -21,12 +21,12 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install env_vars
+    $ gem install superconfig
 
 ## Usage
 
 ```ruby
-Config = Env::Vars.new do
+Config = SuperConfig.new do
   mandatory :database_url, string
   optional  :timeout, int, 10
   optional  :force_ssl, bool, false
@@ -42,18 +42,18 @@ You can specify the description for both `mandatory` and `optional` methods;
 this will be used in exceptions.
 
 ```ruby
-Config = Env::Vars.new do
+Config = SuperConfig.new do
   mandatory :missing_var, string, description: "this is important"
 end
 
-#=> Env::Vars::MissingEnvironmentVariable: MISSING_VAR (this is important) is not defined
+#=> SuperConfig::MissingEnvironmentVariable: MISSING_VAR (this is important) is not defined
 ```
 
-If you're going to use `env_vars` as your main configuration object, you can
+If you're going to use `SuperConfig` as your main configuration object, you can
 also set arbitrary properties, like the following:
 
 ```ruby
-Config = Env::Vars.new do
+Config = SuperConfig.new do
   optional :redis_url, string, "redis://127.0.0.1"
   property :redis, -> { Redis.new } # pass an object that responds to #call
   property(:now) { Time.now }       # or pass a block.
@@ -68,7 +68,7 @@ Values are cached by default. If you want to dynamically generate new values,
 set `cache: false`.
 
 ```ruby
-Config = Env::Vars.new do
+Config = SuperConfig.new do
   property(:uuid, cache: false) { SecureRandom.uuid }
 end
 ```
@@ -79,18 +79,18 @@ messages to `$stderr`. This is especially great with Rails' credentials command
 (`rails credentials:edit`) when already defined the configuration.
 
 ```ruby
-Config = Env::Vars.new(raise_exception: false) do
+Config = SuperConfig.new(raise_exception: false) do
   mandatory :database_url, string, description: "the leader database"
 end
 
-#=> [ENV_VARS] DATABASE_URL (the leader database) is not defined
+#=> [SUPERCONFIG] DATABASE_URL (the leader database) is not defined
 ```
 
 I'd like to centralize access to my credentials; there's a handy mechanism for
-doing that with `env_vars`:
+doing that with `SuperConfig`:
 
 ```ruby
-Config = Env::Vars.new do
+Config = SuperConfig.new do
   credential :api_secret_key
   credential :slack_oauth_credentials do |creds|
     SlackCredentials.new(creds)
@@ -121,17 +121,17 @@ You can coerce values to the following types:
 ### Dotenv integration
 
 If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply
-require `env_vars/dotenv`. This will load environment variables from
+require `superconfig/dotenv`. This will load environment variables from
 `.env.local.%{environment}`, `.env.local`, `.env.%{environment}` and `.env`
 files, respectively. You _must_ add `dotenv` to your `Gemfile`.
 
 ```ruby
-require "env_vars/dotenv"
+require "superconfig/dotenv"
 ```
 
 ### Configuring Rails
 
-If you want to use `env_vars` even on your Rails configuration files like
+If you want to use `SuperConfig` even on your Rails configuration files like
 `database.yml` and `secrets.yml`, you must load it from `config/boot.rb`, right
 after setting up Bundler.
 
@@ -142,7 +142,7 @@ ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../../Gemfile", __FILE__)
 require "bundler/setup"
 
 # Load configuration.
-require "env_vars/dotenv"
+require "superconfig/dotenv"
 require File.expand_path("../config", __FILE__)
 ```
 
@@ -161,7 +161,7 @@ git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at
-https://github.com/fnando/env_vars. This project is intended to be a safe,
+https://github.com/fnando/superconfig. This project is intended to be a safe,
 welcoming space for collaboration, and contributors are expected to adhere to
 the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 

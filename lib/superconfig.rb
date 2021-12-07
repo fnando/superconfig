@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-module Env
-  class Vars
-    VERSION = "2.0.0"
+module SuperConfig
+  VERSION = "2.0.0"
+
+  MissingEnvironmentVariable = Class.new(StandardError)
+  MissingCallable = Class.new(StandardError)
+
+  def self.new(**kwargs, &block)
+    Base.new(**kwargs, &block)
+  end
+
+  class Base
     BOOL_TRUE = ["yes", "true", "1", true].freeze
     BOOL_FALSE = %w[no false].freeze
-
-    MissingEnvironmentVariable = Class.new(StandardError)
-    MissingCallable = Class.new(StandardError)
 
     def initialize(env: ENV, raise_exception: true, stderr: $stderr, &block)
       @env = env
@@ -18,7 +23,7 @@ module Env
     end
 
     def to_s
-      "#<Env::Vars>"
+      "#<SuperConfig>"
     end
     alias inspect to_s
 
@@ -57,7 +62,7 @@ module Env
 
       raise MissingEnvironmentVariable, message if @raise_exception
 
-      message = "[ENV_VARS] #{message}"
+      message = "[SUPERCONF] #{message}"
       message = "\e[31m#{message}\e[0m" if @stderr.tty?
       @stderr << message << "\n"
     end

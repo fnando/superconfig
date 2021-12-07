@@ -1,18 +1,19 @@
 # frozen_string_literal: true
 
-require_relative "./lib/env_vars"
+require_relative "./lib/superconfig"
 
 Gem::Specification.new do |spec|
-  spec.name          = "env_vars"
-  spec.version       = Env::Vars::VERSION
+  spec.name          = "superconfig"
+  spec.version       = SuperConfig::VERSION
   spec.authors       = ["Nando Vieira"]
-  spec.email         = ["fnando.vieira@gmail.com"]
+  spec.email         = ["me@fnando.com"]
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
+  spec.metadata = {"rubygems_mfa_required" => "true"}
 
   spec.summary       = "Access environment variables. Also includes presence " \
                        "validation, type coercion and default values."
   spec.description   = spec.summary
-  spec.homepage      = "https://github.com/fnando/env_vars"
+  spec.homepage      = "https://github.com/fnando/superconfig"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`

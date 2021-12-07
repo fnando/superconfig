@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "env_vars"
+require "superconfig"
 require "dotenv"
 
 env = ENV["RACK_ENV"] || ENV["RAILS_ENV"] || "development"
