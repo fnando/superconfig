@@ -118,6 +118,47 @@ You can coerce values to the following types:
 - `json`: E.g. `mandatory :keyring, json`. The environment variable must be
   parseable by `JSON.parse(content)`.
 
+### Report
+
+Sometimes it gets hard to understand what's set and what's not. In this case,
+you can get a report by calling `SuperConfig::Base#report`. If you're using
+Rails, you can create a rake task like this:
+
+```ruby
+# frozen_string_literal: true
+
+desc "Show SuperConfig report"
+task superconfig: [:environment] do
+  puts YourAppNamespace::Config.report
+end
+```
+
+Then, change your configuration so it doesn't raise an exception.
+
+```ruby
+# frozen_string_literal: true
+# file: config/config.rb
+
+module YourAppNamespace
+  Config = SuperConfig.new(raise_exception: false) do
+    mandatory :database_url, string
+    optional :app_name, string
+    optional :wait, string
+    optional :force_ssl, bool, true
+  end
+end
+```
+
+Finally, run the following command:
+
+```console
+$ rails superconfig
+❌ DATABASE_URL is not set (mandatory)
+✅ APP_NAME is set (optional)
+⚠️ WAIT is not set (optional)
+✅ FORCE_SSL is not set, but has default value (optional)
+```
+
 ### Dotenv integration
 
 If you're using [dotenv](https://rubygems.org/gems/dotenv), you can simply

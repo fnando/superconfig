@@ -18,6 +18,7 @@ module SuperConfig
       @env = env
       @raise_exception = raise_exception
       @stderr = stderr
+      @attributes = {}
       @__cache__ = {}
       instance_eval(&block)
     end
@@ -37,6 +38,9 @@ module SuperConfig
     )
       name = name.to_s
       env_var = name.upcase
+
+      @attributes[env_var] = {required: required, default: default}
+
       name = "#{name}?" if type == bool
 
       validate!(env_var, required, description)
@@ -137,6 +141,32 @@ module SuperConfig
 
     def json
       :json
+    end
+
+    def report
+      attrs = @attributes.sort
+
+      report = attrs.each_with_object([]) do |(env_var, info), buffer|
+        icon, message = if @env.key?(env_var)
+                          ["✅", "is set"]
+                        elsif info[:required]
+                          ["❌", "is not set"]
+                        elsif !info[:required] && !info[:default].nil?
+                          ["✅", "is not set, but has default value"]
+                        else
+                          ["⚠️", "is not set"]
+                        end
+
+        label = if info[:required]
+                  "mandatory"
+                else
+                  "optional"
+                end
+
+        buffer << [icon, env_var, message, "(#{label})"].join(" ")
+      end
+
+      "#{report.join("\n")}\n"
     end
 
     private def coerce_to_string(value)

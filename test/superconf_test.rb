@@ -3,6 +3,26 @@
 require "test_helper"
 
 class SuperConfigTest < Minitest::Test
+  test "generate report" do
+    vars = SuperConfig.new(
+      env: {"APP_NAME" => "myapp"},
+      raise_exception: false
+    ) do
+      mandatory :database_url, string
+      optional :app_name, string
+      optional :wait, int
+      optional :force_ssl, bool, true
+    end
+
+    report = vars.report
+
+    assert_includes report, "❌ DATABASE_URL is not set (mandatory)\n"
+    assert_includes report, "✅ APP_NAME is set (optional)\n"
+    assert_includes report, "⚠️ WAIT is not set (optional)\n"
+    assert_includes report,
+                    "✅ FORCE_SSL is not set, but has default value (optional)\n"
+  end
+
   test "avoid leaking information" do
     vars = SuperConfig.new { @foo = 1 }
 
