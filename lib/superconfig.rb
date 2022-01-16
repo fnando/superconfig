@@ -144,7 +144,9 @@ module SuperConfig
     end
 
     def report
-      report = @attributes.sort.each_with_object([]) do |(env_var, info), buffer|
+      attrs = @attributes.sort
+
+      report = attrs.each_with_object([]) do |(env_var, info), buffer|
         icon, message = if @env.key?(env_var)
                           ["✅", "is set"]
                         elsif info[:required]
