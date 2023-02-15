@@ -48,7 +48,7 @@ module SuperConfig
       define_singleton_method(name) do
         return default unless @env.key?(env_var)
 
-        coerce(type, @env[env_var])
+        coerce(env_var, type, @env[env_var])
       end
 
       aliases.each do |alias_name|
@@ -169,41 +169,43 @@ module SuperConfig
       "#{report.join("\n")}\n"
     end
 
-    private def coerce_to_string(value)
+    private def coerce_to_string(_name, value)
       value
     end
 
-    private def coerce_to_bool(value)
+    private def coerce_to_bool(_name, value)
       BOOL_TRUE.include?(value)
     end
 
-    private def coerce_to_int(value)
+    private def coerce_to_int(_name, value)
       Integer(value) if !BOOL_FALSE.include?(value) && value
     end
 
-    private def coerce_to_float(value)
+    private def coerce_to_float(_name, value)
       Float(value) if value
     end
 
-    private def coerce_to_bigdecimal(value)
+    private def coerce_to_bigdecimal(_name, value)
       BigDecimal(value) if value
     end
 
-    private def coerce_to_symbol(value)
+    private def coerce_to_symbol(_name, value)
       value&.to_sym
     end
 
-    private def coerce_to_array(value, type)
-      value&.split(/, */)&.map {|v| coerce(type, v) }
+    private def coerce_to_array(name, value, type)
+      value&.split(/, */)&.map {|v| coerce(name, type, v) }
     end
 
-    private def coerce_to_json(value)
+    private def coerce_to_json(name, value)
       value && JSON.parse(value)
+    rescue JSON::ParserError
+      raise ArgumentError, "#{name} is not a valid JSON string"
     end
 
-    private def coerce(type, value)
+    private def coerce(name, type, value)
       main_type, sub_type = type
-      args = [value]
+      args = [name, value]
       args << sub_type if sub_type
 
       send("coerce_to_#{main_type}", *args)

@@ -13,4 +13,8 @@ Prefix your message with one of the following:
 
 ## Unreleased
 
+- [Changed] Ensure bad JSON strings doesn't leak it's contents.
+
+## v2.0.0
+
 - Initial release.

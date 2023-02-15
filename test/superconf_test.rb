@@ -3,9 +3,10 @@
 require "test_helper"
 
 class SuperConfigTest < Minitest::Test
-  test "generate report" do
+  test "generates report" do
     vars = SuperConfig.new(
       env: {"APP_NAME" => "myapp"},
+      stderr: StringIO.new,
       raise_exception: false
     ) do
       mandatory :database_url, string
@@ -23,14 +24,14 @@ class SuperConfigTest < Minitest::Test
                     "✅ FORCE_SSL is not set, but has default value (optional)\n"
   end
 
-  test "avoid leaking information" do
+  test "avoids leaking information" do
     vars = SuperConfig.new { @foo = 1 }
 
     assert_equal "#<SuperConfig>", vars.to_s
     assert_equal "#<SuperConfig>", vars.inspect
   end
 
-  test "mandatory with set value" do
+  test "defines mandatory attribute with set value" do
     vars = SuperConfig.new(env: {"APP_NAME" => "myapp"}) do
       mandatory :app_name, string
     end
@@ -38,7 +39,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal "myapp", vars.app_name
   end
 
-  test "mandatory without value raises exception" do
+  test "defines mandatory attribute without value raises exception" do
     assert_raises(SuperConfig::MissingEnvironmentVariable) do
       SuperConfig.new(env: {}) do
         mandatory :app_name, string
@@ -46,7 +47,7 @@ class SuperConfigTest < Minitest::Test
     end
   end
 
-  test "mandatory without value raises exception (description)" do
+  test "raises error with description for mandatory attribute without value" do
     error_message = "APP_NAME (the app name) if not defined."
 
     assert_raises(SuperConfig::MissingEnvironmentVariable, error_message) do
@@ -56,7 +57,7 @@ class SuperConfigTest < Minitest::Test
     end
   end
 
-  test "mandatory without value logs message" do
+  test "logs message for mandatory attribute without value" do
     stderr = StringIO.new
 
     SuperConfig.new(env: {}, raise_exception: false, stderr: stderr) do
@@ -67,7 +68,7 @@ class SuperConfigTest < Minitest::Test
                  stderr.tap(&:rewind).read
   end
 
-  test "mandatory without value logs colored message" do
+  test "logs colored message for mandatory attribute without value" do
     stderr = Class.new(StringIO) do
       def tty?
         true
@@ -82,7 +83,7 @@ class SuperConfigTest < Minitest::Test
                  stderr.tap(&:rewind).read
   end
 
-  test "mandatory without value logs message (description)" do
+  test "logs description for mandatory attribute without value" do
     stderr = StringIO.new
 
     SuperConfig.new(env: {}, raise_exception: false, stderr: stderr) do
@@ -93,7 +94,7 @@ class SuperConfigTest < Minitest::Test
                  stderr.tap(&:rewind).read
   end
 
-  test "optional with set value" do
+  test "defines optional attribute with set value" do
     vars = SuperConfig.new(env: {"APP_NAME" => "myapp"}) do
       optional :app_name, string
     end
@@ -101,7 +102,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal "myapp", vars.app_name
   end
 
-  test "defines optional" do
+  test "defines optional without value" do
     vars = SuperConfig.new(env: {}) do
       optional :app_name, string
     end
@@ -117,7 +118,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal "myapp", vars.app_name
   end
 
-  test "coerce symbol" do
+  test "coerces symbol" do
     vars = SuperConfig.new(env: {"APP_NAME" => "myapp"}) do
       mandatory :app_name, symbol
     end
@@ -125,7 +126,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal :myapp, vars.app_name
   end
 
-  test "do not coerce nil values to symbol" do
+  test "does not coerce nil values to symbol" do
     vars = SuperConfig.new(env: {}) do
       optional :app_name, symbol
     end
@@ -133,7 +134,7 @@ class SuperConfigTest < Minitest::Test
     assert_nil vars.app_name
   end
 
-  test "coerce float" do
+  test "coerces float" do
     vars = SuperConfig.new(env: {"WAIT" => "0.01"}) do
       mandatory :wait, float
     end
@@ -141,7 +142,7 @@ class SuperConfigTest < Minitest::Test
     assert_in_delta 0.01, vars.wait
   end
 
-  test "coerce bigdecimal" do
+  test "coerces bigdecimal" do
     vars = SuperConfig.new(env: {"FEE" => "0.0001"}) do
       mandatory :fee, bigdecimal
     end
@@ -150,7 +151,7 @@ class SuperConfigTest < Minitest::Test
     assert_kind_of BigDecimal, vars.fee
   end
 
-  test "do not coerce nil values to float" do
+  test "does not coerce nil values to float" do
     vars = SuperConfig.new(env: {}) do
       optional :wait, float
     end
@@ -158,7 +159,7 @@ class SuperConfigTest < Minitest::Test
     assert_nil vars.wait
   end
 
-  test "coerce array" do
+  test "coerces array" do
     vars = SuperConfig.new(env: {"CHARS" => "a, b, c"}) do
       mandatory :chars, array
     end
@@ -166,7 +167,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal %w[a b c], vars.chars
   end
 
-  test "coerce array (without spaces)" do
+  test "coerces array (without spaces)" do
     vars = SuperConfig.new(env: {"CHARS" => "a,b,c"}) do
       mandatory :chars, array
     end
@@ -174,7 +175,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal %w[a b c], vars.chars
   end
 
-  test "coerce array and items" do
+  test "coerces array and items" do
     vars = SuperConfig.new(env: {"CHARS" => "a,b,c"}) do
       mandatory :chars, array(symbol)
     end
@@ -182,7 +183,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal %i[a b c], vars.chars
   end
 
-  test "do not coerce nil values to array" do
+  test "does not coerce nil values to array" do
     vars = SuperConfig.new(env: {}) do
       optional :chars, array
     end
@@ -190,7 +191,7 @@ class SuperConfigTest < Minitest::Test
     assert_nil vars.chars
   end
 
-  test "return default boolean" do
+  test "returns default boolean" do
     vars = SuperConfig.new(env: {}) do
       optional :force_ssl, bool, true
     end
@@ -212,7 +213,7 @@ class SuperConfigTest < Minitest::Test
         mandatory :force_ssl, bool
       end
 
-      refute vars.force_ssl?
+      refute_predicate vars, :force_ssl?
     end
   end
 
@@ -225,16 +226,16 @@ class SuperConfigTest < Minitest::Test
   end
 
   test "raises exception with invalid int" do
-    assert_raises(ArgumentError) do
-      vars = SuperConfig.new(env: {"TIMEOUT" => "invalid"}) do
-        mandatory :timeout, int
-      end
+    vars = SuperConfig.new(env: {"TIMEOUT" => "invalid"}) do
+      mandatory :timeout, int
+    end
 
+    assert_raises(ArgumentError) do
       vars.timeout
     end
   end
 
-  test "do not coerce int when negative bool is set" do
+  test "does not coerce int when negative bool is set" do
     vars = SuperConfig.new(env: {"TIMEOUT" => "false"}) do
       mandatory :timeout, int
     end
@@ -247,10 +248,20 @@ class SuperConfigTest < Minitest::Test
       mandatory :keyring, json
     end
 
-    assert_equal vars.keyring["1"], "SECRET"
+    assert_equal("SECRET", vars.keyring["1"])
   end
 
-  test "create alias" do
+  test "avoids leaking data when json is invalid" do
+    vars = SuperConfig.new(env: {"KEYRING" => %[invalid]}) do
+      mandatory :keyring, json
+    end
+
+    assert_raises(ArgumentError, "KEYRING is not a valid JSON string") do
+      vars.keyring
+    end
+  end
+
+  test "creates alias" do
     vars = SuperConfig.new(env: {"RACK_ENV" => "development"}) do
       mandatory :rack_env, string, aliases: %w[env]
     end
@@ -259,7 +270,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal "development", vars.env
   end
 
-  test "get all caps variable" do
+  test "gets all caps variable" do
     vars = SuperConfig.new(env: {"TZ" => "Etc/UTC"}) do
       mandatory :tz, string
     end
@@ -267,7 +278,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal "Etc/UTC", vars.tz
   end
 
-  test "set arbitrary property" do
+  test "sets arbitrary property" do
     vars = SuperConfig.new do
       property :number, -> { 1234 }
     end
@@ -275,7 +286,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal 1234, vars.number
   end
 
-  test "set arbitrary property with a block" do
+  test "sets arbitrary property with a block" do
     vars = SuperConfig.new do
       property :number do
         1234
@@ -285,7 +296,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal 1234, vars.number
   end
 
-  test "cache generated values" do
+  test "caches generated values" do
     numbers = [1, 2]
 
     vars = SuperConfig.new do
@@ -296,7 +307,7 @@ class SuperConfigTest < Minitest::Test
     assert_equal 1, vars.number
   end
 
-  test "don't cache generated values" do
+  test "does not cache generated values" do
     numbers = [1, 2]
 
     vars = SuperConfig.new do
@@ -307,13 +318,13 @@ class SuperConfigTest < Minitest::Test
     assert_equal 2, vars.number
   end
 
-  test "raise when no callable has been passed to property" do
+  test "raises error when no callable has been passed to property" do
     assert_raises(Exception) do
       SuperConfig.new { property(:something) }
     end
   end
 
-  test "lazy evaluate properties" do
+  test "uses lazy property evaluation" do
     numbers = [1, 2]
 
     vars = SuperConfig.new do
@@ -321,11 +332,13 @@ class SuperConfigTest < Minitest::Test
     end
 
     assert_equal [1, 2], numbers
+
     vars.number
+
     assert_equal [2], numbers
   end
 
-  test "wrap Rails credentials" do
+  test "wraps Rails credentials" do
     vars = SuperConfig.new do
       credential(:secret)
       credential(:another_secret, &:upcase)
