@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-## Unreleased
+## v2.0.1
 
 - [Changed] Ensure bad JSON strings doesn't leak it's contents.
 
