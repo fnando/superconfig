@@ -60,7 +60,7 @@ class SuperConfigTest < Minitest::Test
   test "logs message for mandatory attribute without value" do
     stderr = StringIO.new
 
-    SuperConfig.new(env: {}, raise_exception: false, stderr: stderr) do
+    SuperConfig.new(env: {}, raise_exception: false, stderr:) do
       mandatory :app_name, string
     end
 
@@ -75,7 +75,7 @@ class SuperConfigTest < Minitest::Test
       end
     end.new
 
-    SuperConfig.new(env: {}, raise_exception: false, stderr: stderr) do
+    SuperConfig.new(env: {}, raise_exception: false, stderr:) do
       mandatory :app_name, string
     end
 
@@ -86,7 +86,7 @@ class SuperConfigTest < Minitest::Test
   test "logs description for mandatory attribute without value" do
     stderr = StringIO.new
 
-    SuperConfig.new(env: {}, raise_exception: false, stderr: stderr) do
+    SuperConfig.new(env: {}, raise_exception: false, stderr:) do
       mandatory :app_name, string, description: "the app name"
     end
 

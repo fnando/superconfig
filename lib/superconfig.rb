@@ -6,8 +6,8 @@ module SuperConfig
   MissingEnvironmentVariable = Class.new(StandardError)
   MissingCallable = Class.new(StandardError)
 
-  def self.new(**kwargs, &block)
-    Base.new(**kwargs, &block)
+  def self.new(...)
+    Base.new(...)
   end
 
   class Base
@@ -39,7 +39,7 @@ module SuperConfig
       name = name.to_s
       env_var = name.upcase
 
-      @attributes[env_var] = {required: required, default: default}
+      @attributes[env_var] = {required:, default:}
 
       name = "#{name}?" if type == bool
 
@@ -76,17 +76,17 @@ module SuperConfig
         name,
         type,
         required: true,
-        aliases: aliases,
-        description: description
+        aliases:,
+        description:
       )
     end
 
     def optional(name, type, default = nil, aliases: [], description: nil)
-      set(name, type, default, aliases: aliases, description: description)
+      set(name, type, default, aliases:, description:)
     end
 
     def property(name, func = nil, cache: true, description: nil, &block) # rubocop:disable Lint/UnusedMethodArgument
-      callable = (func || block)
+      callable = func || block
 
       unless callable
         raise MissingCallable, "arg[1] must respond to #call or pass a block"
@@ -103,7 +103,7 @@ module SuperConfig
 
     def credential(name, &block)
       define_singleton_method(name) do
-        @__cache__["_credential_#{name}".to_sym] ||= begin
+        @__cache__[:"_credential_#{name}"] ||= begin
           value = Rails.application.credentials.fetch(name)
           block ? block.call(value) : value # rubocop:disable Performance/RedundantBlockCall
         end
@@ -208,7 +208,7 @@ module SuperConfig
       args = [name, value]
       args << sub_type if sub_type
 
-      send("coerce_to_#{main_type}", *args)
+      send(:"coerce_to_#{main_type}", *args)
     end
   end
 end
