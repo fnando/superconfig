@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+# Unreleased
+
+- [Added] `SuperConfig#set(key, value)` method to set arbitrary values.
+
 ## v2.1.1
 
 - [Changed] Ensure bad JSON strings doesn't leak it's contents.

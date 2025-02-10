@@ -347,4 +347,12 @@ class SuperConfigTest < Minitest::Test
     assert_equal "secret", vars.secret
     assert_equal "ANOTHER_SECRET", vars.another_secret
   end
+
+  test "sets arbitrary values" do
+    vars = SuperConfig.new do
+      set(:number, 1234)
+    end
+
+    assert_equal 1234, vars.number
+  end
 end

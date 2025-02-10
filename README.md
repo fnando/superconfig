@@ -73,6 +73,14 @@ Config = SuperConfig.new do
 end
 ```
 
+You can also set values using `SuperConfig#set`.
+
+```ruby
+Config = SuperConfig.new do
+  set :domain, "example.com"
+end
+```
+
 You may want to start a debug session without raising exceptions for missing
 variables. In this case, just pass `raise_exception: false` instead to log error
 messages to `$stderr`. This is especially great with Rails' credentials command

@@ -28,34 +28,6 @@ module SuperConfig
     end
     alias inspect to_s
 
-    def set(
-      name,
-      type,
-      default = nil,
-      required: false,
-      aliases: [],
-      description: nil
-    )
-      name = name.to_s
-      env_var = name.upcase
-
-      @attributes[env_var] = {required:, default:}
-
-      name = "#{name}?" if type == bool
-
-      validate!(env_var, required, description)
-
-      define_singleton_method(name) do
-        return default unless @env.key?(env_var)
-
-        coerce(env_var, type, @env[env_var])
-      end
-
-      aliases.each do |alias_name|
-        define_singleton_method(alias_name, method(name))
-      end
-    end
-
     def validate!(env_var, required, description)
       return unless required
       return if @env.key?(env_var)
@@ -72,7 +44,7 @@ module SuperConfig
     end
 
     def mandatory(name, type, aliases: [], description: nil)
-      set(
+      assign(
         name,
         type,
         required: true,
@@ -82,7 +54,11 @@ module SuperConfig
     end
 
     def optional(name, type, default = nil, aliases: [], description: nil)
-      set(name, type, default, aliases:, description:)
+      assign(name, type, default, aliases:, description:)
+    end
+
+    def set(name, value)
+      property(name) { value }
     end
 
     def property(name, func = nil, cache: true, description: nil, &block) # rubocop:disable Lint/UnusedMethodArgument
@@ -209,6 +185,34 @@ module SuperConfig
       args << sub_type if sub_type
 
       send(:"coerce_to_#{main_type}", *args)
+    end
+
+    private def assign(
+      name,
+      type,
+      default = nil,
+      required: false,
+      aliases: [],
+      description: nil
+    )
+      name = name.to_s
+      env_var = name.upcase
+
+      @attributes[env_var] = {required:, default:}
+
+      name = "#{name}?" if type == bool
+
+      validate!(env_var, required, description)
+
+      define_singleton_method(name) do
+        return default unless @env.key?(env_var)
+
+        coerce(env_var, type, @env[env_var])
+      end
+
+      aliases.each do |alias_name|
+        define_singleton_method(alias_name, method(name))
+      end
     end
   end
 end
