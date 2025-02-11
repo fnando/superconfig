@@ -350,9 +350,18 @@ class SuperConfigTest < Minitest::Test
 
   test "sets arbitrary values" do
     vars = SuperConfig.new do
-      set(:number, 1234)
+      set :number, 1234
     end
 
     assert_equal 1234, vars.number
+  end
+
+  test "sets arbitrary values using a hash" do
+    vars = SuperConfig.new do
+      set :options, a: 1, b: 2
+    end
+
+    assert_equal 1, vars.options[:a]
+    assert_equal 2, vars.options[:b]
   end
 end
