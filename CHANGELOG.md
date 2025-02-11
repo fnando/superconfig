@@ -13,6 +13,10 @@ Prefix your message with one of the following:
 
 # Unreleased
 
+- [Changed] Silence warnings when reassigning a method with `set`.
+
+# v2.2.0
+
 - [Added] `SuperConfig#set(key, value)` method to set arbitrary values.
 
 ## v2.1.1

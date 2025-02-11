@@ -58,7 +58,9 @@ module SuperConfig
     end
 
     def set(name, value)
-      property(name) { value }
+      silence_warnings do
+        property(name) { value }
+      end
     end
 
     def property(name, func = nil, cache: true, description: nil, &block) # rubocop:disable Lint/UnusedMethodArgument
@@ -213,6 +215,14 @@ module SuperConfig
       aliases.each do |alias_name|
         define_singleton_method(alias_name, method(name))
       end
+    end
+
+    private def silence_warnings(&)
+      old_verbose = $VERBOSE
+      $VERBOSE = nil
+      yield
+    ensure
+      $VERBOSE = old_verbose
     end
   end
 end
