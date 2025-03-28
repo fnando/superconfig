@@ -11,6 +11,10 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
+# Unreleased
+
+- [Added] Add support for prefixed env vars with (e.g. `MYAPP_`).
+
 # v2.2.1
 
 - [Changed] Silence warnings when reassigning a method with `set`.

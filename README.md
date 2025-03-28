@@ -49,6 +49,21 @@ end
 #=> SuperConfig::MissingEnvironmentVariable: MISSING_VAR (this is important) is not defined
 ```
 
+### Using prefixed environment variables
+
+If you're creating a library, you may want to use prefixed env vars. In this
+case, you can pass a prefix to `SuperConfig.new`.
+
+```ruby
+Config = SuperConfig.new(prefix: "MYAPP") do
+  optional :redis_url, string, "redis://127.0.0.1"
+end
+```
+
+This will look for `MYAPP_REDIS_URL` in the environment variables.
+
+### Setting arbitrary properties
+
 If you're going to use `SuperConfig` as your main configuration object, you can
 also set arbitrary properties, like the following:
 
@@ -64,6 +79,8 @@ Config.redis.get("key")
 #=> "value"
 ```
 
+### Caching values
+
 Values are cached by default. If you want to dynamically generate new values,
 set `cache: false`.
 
@@ -73,6 +90,8 @@ Config = SuperConfig.new do
 end
 ```
 
+### Setting values
+
 You can also set values using `SuperConfig#set`.
 
 ```ruby
@@ -80,6 +99,8 @@ Config = SuperConfig.new do
   set :domain, "example.com"
 end
 ```
+
+### Troubleshooting
 
 You may want to start a debug session without raising exceptions for missing
 variables. In this case, just pass `raise_exception: false` instead to log error
@@ -94,8 +115,10 @@ end
 #=> [SUPERCONFIG] DATABASE_URL (the leader database) is not defined
 ```
 
-I'd like to centralize access to my credentials; there's a handy mechanism for
-doing that with `SuperConfig`:
+### Rails credentials
+
+I like to centralize access to my Rails credentials; there's a handy mechanism
+for doing that with `SuperConfig`:
 
 ```ruby
 Config = SuperConfig.new do

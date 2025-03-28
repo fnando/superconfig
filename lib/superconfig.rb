@@ -14,8 +14,15 @@ module SuperConfig
     BOOL_TRUE = ["yes", "true", "1", true].freeze
     BOOL_FALSE = %w[no false].freeze
 
-    def initialize(env: ENV, raise_exception: true, stderr: $stderr, &block)
+    def initialize(
+      env: ENV,
+      prefix: nil,
+      raise_exception: true,
+      stderr: $stderr,
+      &block
+    )
       @env = env
+      @prefix = prefix
       @raise_exception = raise_exception
       @stderr = stderr
       @attributes = {}
@@ -29,6 +36,8 @@ module SuperConfig
     alias inspect to_s
 
     def validate!(env_var, required, description)
+      env_var = [@prefix, env_var].compact.join("_").upcase
+
       return unless required
       return if @env.key?(env_var)
 
@@ -198,7 +207,7 @@ module SuperConfig
       description: nil
     )
       name = name.to_s
-      env_var = name.upcase
+      env_var = [@prefix, name].compact.join("_").upcase
 
       @attributes[env_var] = {required:, default:}
 

@@ -364,4 +364,15 @@ class SuperConfigTest < Minitest::Test
     assert_equal 1, vars.options[:a]
     assert_equal 2, vars.options[:b]
   end
+
+  test "uses env var prefix" do
+    env = {"MYAPP_HELLO" => "hello", "FOO" => "foo"}
+    vars = SuperConfig.new(prefix: "MYAPP", env:) do
+      optional :hello, string
+      optional :foo, string
+    end
+
+    assert_equal "hello", vars.hello
+    assert_nil vars.foo
+  end
 end
