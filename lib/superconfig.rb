@@ -66,6 +66,10 @@ module SuperConfig
       assign(name, type, default, aliases:, description:)
     end
 
+    def get(name)
+      public_send(name)
+    end
+
     def set(name, value)
       silence_warnings do
         property(name) { value }

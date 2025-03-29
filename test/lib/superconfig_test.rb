@@ -354,6 +354,7 @@ class SuperConfigTest < Minitest::Test
     end
 
     assert_equal 1234, vars.number
+    assert_equal 1234, vars.get(:number)
   end
 
   test "sets arbitrary values using a hash" do

@@ -14,6 +14,7 @@ Prefix your message with one of the following:
 # Unreleased
 
 - [Added] Add support for prefixed env vars with (e.g. `MYAPP_`).
+- [Added] Add `SuperConfig#get` method to retrieve values.
 
 # v2.2.1
 
