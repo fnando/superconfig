@@ -376,4 +376,13 @@ class SuperConfigTest < Minitest::Test
     assert_equal "hello", vars.hello
     assert_nil vars.foo
   end
+
+  test "defines alias for boolean properties defined with set" do
+    vars = SuperConfig.new do
+      set :done, true
+    end
+
+    assert vars.done?
+    assert vars.get(:done)
+  end
 end

@@ -15,6 +15,8 @@ Prefix your message with one of the following:
 
 - [Added] Add support for prefixed env vars with (e.g. `MYAPP_`).
 - [Added] Add `SuperConfig#get` method to retrieve values.
+- [Changed] Define boolean properties defined with `SuperConfig#set` as
+  predicates.
 
 # v2.2.1
 

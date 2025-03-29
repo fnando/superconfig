@@ -67,10 +67,18 @@ module SuperConfig
     end
 
     def get(name)
-      public_send(name)
+      predicate = "#{name}?"
+
+      if respond_to?(predicate)
+        public_send(predicate)
+      else
+        public_send(name)
+      end
     end
 
     def set(name, value)
+      name = "#{name}?" if value.is_a?(TrueClass) || value.is_a?(FalseClass)
+
       silence_warnings do
         property(name) { value }
       end
