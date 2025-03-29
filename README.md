@@ -38,6 +38,12 @@ Config.timeout
 Config.force_ssl?
 ```
 
+> [!NOTE]
+>
+> Properties defined with `bool` will always be named as predicates, ending with
+> `?`. The same thing happens if you define properties using `#set(name, value)`
+> where the value is a boolean.
+
 You can specify the description for both `mandatory` and `optional` methods;
 this will be used in exceptions.
 
