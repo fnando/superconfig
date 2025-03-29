@@ -11,7 +11,7 @@ Prefix your message with one of the following:
 - [Security] in case of vulnerabilities.
 -->
 
-# Unreleased
+# v3.0.0
 
 - [Added] Add support for prefixed env vars with (e.g. `MYAPP_`).
 - [Added] Add `SuperConfig#get` method to retrieve values.
