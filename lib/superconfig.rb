@@ -19,7 +19,7 @@ module SuperConfig
       prefix: nil,
       raise_exception: true,
       stderr: $stderr,
-      &block
+      &
     )
       @env = env
       @prefix = prefix
@@ -27,7 +27,7 @@ module SuperConfig
       @stderr = stderr
       @attributes = {}
       @__cache__ = {}
-      instance_eval(&block)
+      instance_eval(&)
     end
 
     def to_s
@@ -172,7 +172,7 @@ module SuperConfig
       value
     end
 
-    private def coerce_to_bool(_name, value)
+    private def coerce_to_bool(_name, value) # rubocop:disable Naming/PredicateMethod
       BOOL_TRUE.include?(value)
     end
 
